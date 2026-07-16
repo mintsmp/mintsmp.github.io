@@ -1,2 +1,476 @@
-# mintsmp.github.io
-mintsmp official website
+
+<!DOCTYPE html>
+<!-- saved from url=(0044)file:///C:/Users/user/Downloads/index_1.html -->
+<html lang="ru" data-mode="dark" data-accent="mint"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mintsmp — whitelist survival на Paper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./mintsmp — whitelist survival_files/css2" rel="stylesheet">
+<style>
+
+  /* ================= base tokens (mode-independent) ================= */
+  :root{
+    --font-display: 'IBM Plex Sans', -apple-system, sans-serif;
+    --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+    --radius: 2px;
+    --wrap: 1100px;
+    --accent-on-light: #ffffff;
+    --accent-on-dark:  #101210;
+  }
+
+  /* ================= palette: чёрная / белая ================= */
+  html[data-mode="light"]{
+    --bg:        #ffffff;
+    --surface:   #f5f5f5;
+    --surface-2: #eaeaea;
+    --border:    #dddddd;
+    --text:      #0a0a0a;
+    --text-muted:#57575a;
+    --text-faint:#9b9b9d;
+    --accent-on: var(--accent-on-light);
+  }
+  html[data-mode="dark"]{
+    --bg:        #050505;
+    --surface:   #101010;
+    --surface-2: #191919;
+    --border:    #2a2a2a;
+    --text:      #f2f2f2;
+    --text-muted:#a1a1a1;
+    --text-faint:#5c5c5c;
+    --accent-on: var(--accent-on-dark);
+  }
+
+  /* ================= акцент: лайм / зелёный / мятный / бирюзовый ================= */
+  html[data-mode="light"][data-accent="lime"]{ --accent:#6f8f00; --accent-soft:rgba(111,143,0,.10); }
+  html[data-mode="light"][data-accent="green"]{ --accent:#2f8f4e; --accent-soft:rgba(47,143,78,.10); }
+  html[data-mode="light"][data-accent="mint"]{ --accent:#0f9c7c; --accent-soft:rgba(15,156,124,.10); }
+  html[data-mode="light"][data-accent="turquoise"]{ --accent:#0f8fa3; --accent-soft:rgba(15,143,163,.10); }
+
+  html[data-mode="dark"][data-accent="lime"]{ --accent:#c3f53d; --accent-soft:rgba(195,245,61,.12); }
+  html[data-mode="dark"][data-accent="green"]{ --accent:#6fe08a; --accent-soft:rgba(111,224,138,.12); }
+  html[data-mode="dark"][data-accent="mint"]{ --accent:#4de3bb; --accent-soft:rgba(77,227,187,.12); }
+  html[data-mode="dark"][data-accent="turquoise"]{ --accent:#4fd6e8; --accent-soft:rgba(79,214,232,.12); }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-display);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    transition: background .2s ease, color .2s ease;
+  }
+
+  /* faint chunk grid — nod to how the world is actually divided, not decoration for its own sake */
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    pointer-events:none;
+    z-index: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: .35;
+    filter: url(#warp);
+  }
+  html[data-mode="light"] body::before{ opacity:.5; }
+
+  .wrap{ max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
+  a{ color: inherit; text-decoration: none; }
+  ul{ list-style:none; }
+  h1,h2,h3{ font-weight:600; line-height:1.1; letter-spacing:-.01em; }
+
+  .eyebrow{
+    font-family: var(--font-mono);
+    font-size: .72rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{ content:"//"; color: var(--text-faint); }
+
+  /* ================= header ================= */
+  header{
+    position: fixed; top:0; left:0; right:0; z-index: 100;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  header .wrap{ display:flex; align-items:center; justify-content:space-between; height: 60px; gap: 20px; }
+
+  .logo{ font-family: var(--font-mono); font-size: 1rem; font-weight:600; white-space:nowrap; }
+  .logo .dim{ color: var(--text-faint); }
+  .logo .hi{ color: var(--accent); }
+
+  nav ul{ display:flex; gap: 4px; font-family: var(--font-mono); font-size: .82rem; }
+  nav a{ color: var(--text-muted); padding: 8px 10px; transition: color .15s; }
+  nav a:hover{ color: var(--text); }
+  nav a .br{ color: var(--text-faint); }
+
+  .header-controls{ display:flex; align-items:center; gap: 14px; }
+
+  .mode-btn{
+    width: 34px; height: 34px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    border-radius: var(--radius);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+  }
+  .mode-btn:hover{ color: var(--text); border-color: var(--accent); }
+  .mode-btn svg{ width:16px; height:16px; }
+
+  .nav-toggle{ display:none; background:none; border:none; color:var(--text); font-size:1.3rem; cursor:pointer; }
+
+  /* ================= hero ================= */
+  .hero{
+    position: relative;
+    padding: 148px 0 100px;
+  }
+  .hero .wrap{
+    display:grid; grid-template-columns: 1.1fr .9fr; gap: 64px; align-items:center;
+  }
+
+  .hero h1{
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    margin: 16px 0 20px;
+  }
+  .hero h1 .accent{ color: var(--accent); }
+
+  .hero p.lead{ color: var(--text-muted); font-size: 1.05rem; max-width: 480px; margin-bottom: 32px; }
+
+  .cta-row{ display:flex; gap:14px; flex-wrap:wrap; }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding: 12px 22px;
+    border-radius: var(--radius);
+    font-size: .88rem; font-weight:600;
+    font-family: var(--font-mono);
+    border: 1px solid transparent;
+    cursor:pointer;
+    transition: opacity .15s, border-color .15s;
+  }
+  .btn:hover{ opacity:.85; }
+  .btn:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn-primary{ background: var(--accent); color: var(--accent-on); }
+  .btn-ghost{ border-color: var(--border); color: var(--text); background: var(--surface); }
+  .btn-ghost:hover{ border-color: var(--accent); opacity:1; }
+
+  /* manifest block — the actual signature element */
+  .manifest{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: .84rem;
+  }
+  .manifest .mf-head{
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-faint);
+    display:flex; justify-content:space-between;
+  }
+  .manifest .mf-body{ padding: 18px 16px; display:flex; flex-direction:column; gap: 10px; }
+  .manifest .row{ display:flex; gap: 10px; }
+  .manifest .key{ color: var(--text-muted); width: 110px; flex-shrink:0; }
+  .manifest .val{ color: var(--accent); }
+  .manifest .comment{ color: var(--text-faint); }
+
+  /* ================= section shell ================= */
+  section{ padding: 96px 0; position:relative; z-index:1; }
+  .section-head{ max-width: 560px; margin-bottom: 48px; }
+  .section-head h2{ font-size: clamp(1.7rem, 3.4vw, 2.3rem); margin-top:10px; }
+  .section-head p{ color: var(--text-muted); margin-top:12px; font-size:.95rem; }
+
+  /* ================= features ================= */
+  .features-grid{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+    border: 1px solid var(--border); border-right:none; border-bottom:none;
+  }
+  .feature{
+    background: var(--bg);
+    padding: 28px 26px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .feature .tag{ font-family: var(--font-mono); font-size:.7rem; color: var(--accent); margin-bottom:14px; display:block; }
+  .feature h3{ font-size:1.02rem; margin-bottom:8px; }
+  .feature p{ color: var(--text-muted); font-size: .88rem; }
+
+  /* ================= join / craft grid ================= */
+  .join{ background: var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+  .join-layout{ display:grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items:center; }
+
+  .craft-grid{
+    display:grid; grid-template-columns: repeat(3, 78px); grid-template-rows: repeat(3, 78px);
+    gap: 4px; justify-content:center; padding: 16px;
+    background: var(--bg); border: 1px solid var(--border);
+  }
+  .cell{ background: var(--surface-2); display:flex; align-items:center; justify-content:center; position:relative; }
+  .cell.step{ background: var(--accent-soft); cursor:default; }
+  .cell.step .num{ font-family: var(--font-mono); font-size: 1.3rem; color: var(--accent); font-weight:600; }
+  .cell .tip{
+    position:absolute; top: calc(100% + 8px); left:50%; transform: translateX(-50%);
+    width: 180px; background: var(--bg); border: 1px solid var(--border);
+    padding: 9px 11px; font-size: .76rem; color: var(--text-muted);
+    opacity:0; pointer-events:none; transition: opacity .15s; z-index:5;
+  }
+  .cell.step:hover .tip, .cell.step:focus-within .tip{ opacity:1; }
+
+  .join-text ol{ counter-reset: step; display:flex; flex-direction:column; gap: 16px; }
+  .join-text li{ counter-increment: step; display:flex; gap:12px; color: var(--text-muted); font-size: .92rem; }
+  .join-text li::before{
+    content: counter(step);
+    font-family: var(--font-mono); color: var(--accent); flex-shrink:0;
+  }
+  .join-text li strong{ color: var(--text); font-weight:600; display:block; margin-bottom:2px; }
+
+  /* ================= rules ================= */
+  .rules-list{ border: 1px solid var(--border); border-bottom:none; }
+  .rule-row{ padding: 18px 24px; display:flex; gap:16px; align-items:baseline; border-bottom: 1px solid var(--border); }
+  .rule-row .rn{ font-family: var(--font-mono); color: var(--accent); font-size:.8rem; flex-shrink:0; width:26px; }
+  .rule-row p{ color: var(--text-muted); font-size:.92rem; }
+
+  /* ================= community ================= */
+  .community-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap: 1px; background: var(--border); border:1px solid var(--border); }
+  .community-card{ background: var(--bg); padding: 26px; display:flex; flex-direction:column; gap:12px; }
+  .community-card h3{ font-size:1rem; }
+  .community-card p{ color: var(--text-muted); font-size:.88rem; flex-grow:1; }
+  .community-card .btn{ align-self:flex-start; }
+
+  /* ================= footer ================= */
+  footer{ border-top: 1px solid var(--border); padding: 32px 0; }
+  footer .wrap{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+  footer p{ color: var(--text-faint); font-size:.78rem; font-family: var(--font-mono); }
+
+  /* ================= responsive ================= */
+  @media (max-width: 860px){
+    .hero .wrap{ grid-template-columns: 1fr; }
+    .join-layout{ grid-template-columns: 1fr; gap: 36px; }
+  }
+  @media (max-width: 720px){
+    nav{ position:absolute; top:60px; left:0; right:0; background: var(--bg); border-bottom: 1px solid var(--border); max-height:0; overflow:hidden; transition: max-height .25s ease; }
+    nav.open{ max-height:260px; }
+    nav ul{ flex-direction:column; }
+    nav li{ border-top: 1px solid var(--border); }
+    nav a{ display:block; padding: 14px 24px; }
+    .nav-toggle{ display:block; }
+    .craft-grid{ grid-template-columns: repeat(3, 68px); grid-template-rows: repeat(3, 68px); }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="warp" x="-20%" y="-20%" width="140%" height="140%">
+    <feturbulence type="fractalNoise" baseFrequency="0.006" numOctaves="2" seed="7" result="n">
+      <animate attributeName="baseFrequency" values="0.006;0.009;0.006" dur="24s" repeatCount="indefinite"></animate>
+    </feturbulence>
+    <fedisplacementmap in="SourceGraphic" in2="n" scale="3.5"></fedisplacementmap>
+  </filter>
+</svg>
+
+
+<header>
+  <div class="wrap">
+    <a href="file:///C:/Users/user/Downloads/index_1.html#top" class="logo"><span class="dim">mint</span><span class="hi">smp</span></a>
+
+    <nav id="navList">
+      <ul>
+        <li><a href="file:///C:/Users/user/Downloads/index_1.html#features"><span class="br">01/</span> о сервере</a></li>
+        <li><a href="file:///C:/Users/user/Downloads/index_1.html#join"><span class="br">02/</span> как попасть</a></li>
+        <li><a href="file:///C:/Users/user/Downloads/index_1.html#rules"><span class="br">03/</span> правила</a></li>
+        <li><a href="file:///C:/Users/user/Downloads/index_1.html#community"><span class="br">04/</span> сообщество</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-controls">
+      <button class="mode-btn" id="modeBtn" aria-label="Переключить тему">
+        <svg id="modeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+      </button>
+      <button class="nav-toggle" id="navToggle" aria-label="Меню" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">1.21.X · whitelist survival</span>
+        <h1>Небольшой мир<br>для <span class="accent">своих</span></h1>
+        <p class="lead">Mintsmp — выживач без модов и без спешки. Один мир, знакомые люди и плагины, которые не мешают жить, а помогают.</p>
+        <div class="cta-row">
+          <a href="file:///C:/Users/user/Downloads/index_1.html#join" class="btn btn-primary">подать заявку</a>
+          <a href="file:///C:/Users/user/Downloads/index_1.html#community" class="btn btn-ghost">discord / telegram</a>
+        </div>
+      </div>
+
+      <div class="manifest">
+        <!-- секрет для тех, кто читает исходники: ядро на самом деле purpur, не paper -->
+        <div class="mf-head"><span>server.status</span><span>updated: сейчас</span></div>
+        <div class="mf-body">
+          <div class="row"><span class="key">version</span><span class="val">1.21.x</span></div>
+          <div class="row"><span class="key">access</span><span class="val">whitelist-only</span></div>
+          <div class="row"><span class="key">ip</span><span class="val">персональный, у каждого свой</span></div>
+          <div class="row"><span class="comment"># заявки — в discord или telegram</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">что внутри</span>
+        <h2>Ванильный survival с точечными улучшениями</h2>
+        <p>Никаких модов и посторонних механик — только Paper и плагины, написанные под сам сервер.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature">
+          <span class="tag">profile</span>
+          <h3>Профиль-банк</h3>
+          <p>Функциональный профиль игрока: выплачивайте штрафы и сохраняйте алмазную руду в надёжном месте.</p>
+        </div>
+        <div class="feature">
+          <span class="tag">dragon egg</span>
+          <h3>Яйцо дракона — не трофей</h3>
+          <p>Держишь его в инвентаре — получаешь бонус к здоровью. Редкий предмет наконец на что-то влияет.</p>
+        </div>
+        <div class="feature">
+          <span class="tag">clans</span>
+          <h3>Кланы и территории</h3>
+          <p>Объединяйтесь и держите базы вместе — без случайных гостей в общем сундуке.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="join" class="join">
+    <div class="wrap">
+      <div class="section-head" style="margin-bottom:48px;">
+        <span class="eyebrow">крафт допуска</span>
+        <h2>Как попасть на сервер</h2>
+      </div>
+
+      <div class="join-layout">
+        <div class="craft-grid" role="img" aria-label="Схема подачи заявки в виде крафт-сетки">
+          <div class="cell"></div>
+          <div class="cell step" tabindex="0"><span class="num">1</span><div class="tip">Пишешь нам в Discord или Telegram</div></div>
+          <div class="cell"></div>
+
+          <div class="cell step" tabindex="0"><span class="num">2</span><div class="tip">Заполняешь короткую анкету: возраст, опыт, что ищешь на сервере</div></div>
+          <div class="cell step" tabindex="0"><span class="num">3</span><div class="tip">Ждёшь ответа — обычно в течение суток</div></div>
+          <div class="cell step" tabindex="0"><span class="num">4</span><div class="tip">Тебя добавляют в whitelist</div></div>
+
+          <div class="cell"></div>
+          <div class="cell step" tabindex="0"><span class="num">5</span><div class="tip">Получаешь личный доступ и заходишь на свой IP</div></div>
+          <div class="cell"></div>
+        </div>
+
+        <div class="join-text">
+          <ol>
+            <li><strong>Заявка</strong> Коротко расскажи о себе в Telegram — ссылки ниже.</li>
+            <li><strong>Собеседование</strong> Иногда просто уточним пару деталей в переписке.</li>
+            <li><strong>Whitelist</strong> После одобрения добавляем тебя в белый список.</li>
+            <li><strong>Личный доступ</strong> Каждому игроку выдаётся свой адрес для подключения.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rules">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">коротко о главном</span>
+        <h2>Правила</h2>
+        <p>Полный список — в закреплённом сообщении Discord. Вот суть.</p>
+      </div>
+      <div class="rules-list">
+        <div class="rule-row"><span class="rn">01</span><p>Гриферство, кража и обман других игроков — бан без предупреждений.</p></div>
+        <div class="rule-row"><span class="rn">02</span><p>Читы, X-ray и сторонние моды с нечестным преимуществом запрещены.</p></div>
+        <div class="rule-row"><span class="rn">03</span><p>Уважение к другим — обязательно. Токсичность решается модерацией.</p></div>
+        <div class="rule-row"><span class="rn">04</span><p>Спорные ситуации — в Discord, а не в игровом чате.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="community">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">будь на связи</span>
+        <h2>Сообщество</h2>
+      </div>
+      <div class="community-grid">
+        <div class="community-card">
+          <h3>Discord</h3>
+          <p>Скорее для посиделок и общения — не основной канал.</p>
+          <a href="file:///C:/Users/user/Downloads/index_1.html#" class="btn btn-ghost">открыть →</a>
+        </div>
+        <div class="community-card">
+          <h3>Telegram</h3>
+          <p>Здесь всё главное: заявки, новости и почти вся жизнь сервера.</p>
+          <a href="file:///C:/Users/user/Downloads/index_1.html#" class="btn btn-ghost">открыть →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>mintsmp · paper 1.21 · whitelist-only</p>
+    <p id="themeLabel">чёрная · mint</p>
+  </div>
+</footer>
+
+<script>
+  // мобильное меню
+  const navToggle = document.getElementById('navToggle');
+  const navList = document.getElementById('navList');
+  navToggle.addEventListener('click', () => {
+    const open = navList.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open);
+  });
+  navList.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navList.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', false);
+  }));
+
+  // тема: чёрная / белая (акцент фиксирован — mint)
+  const html = document.documentElement;
+  const modeIcon = document.getElementById('modeIcon');
+  const themeLabel = document.getElementById('themeLabel');
+
+  const sunPath = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+  const moonPath = '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/>';
+
+  function applyMode(mode){
+    html.setAttribute('data-mode', mode);
+    modeIcon.innerHTML = mode === 'dark' ? sunPath : moonPath;
+    if (themeLabel) themeLabel.textContent = (mode === 'dark' ? 'чёрная' : 'белая') + ' · mint';
+    localStorage.setItem('mintsmp-mode', mode);
+  }
+
+  const savedMode = localStorage.getItem('mintsmp-mode') ||
+    (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  applyMode(savedMode);
+
+  document.getElementById('modeBtn').addEventListener('click', () => {
+    applyMode(html.getAttribute('data-mode') === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+
+
+</body></html>
