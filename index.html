@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru" data-mode="dark" data-accent="mint">
 <head>
@@ -241,6 +242,46 @@
     .community-card p{ color: var(--text-muted); font-size:.88rem; flex-grow:1; }
     .community-card .btn{ align-self:flex-start; }
 
+    /* ================= donate ================= */
+    .tier-grid{
+      display:grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+      border: 1px solid var(--border); border-right:none; border-bottom:none;
+    }
+    .tier{
+      background: var(--bg);
+      padding: 28px 26px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display:flex; flex-direction:column;
+    }
+    .tier .tag{ font-family: var(--font-mono); font-size:.7rem; color: var(--accent); margin-bottom:14px; display:block; }
+    .tier h3{ font-size:1.02rem; margin-bottom:4px; }
+    .tier .price{ font-family: var(--font-mono); font-size:.82rem; color: var(--text-faint); margin-bottom:16px; }
+    .tier ul{ display:flex; flex-direction:column; gap:8px; margin-bottom:20px; flex-grow:1; }
+    .tier li{ color: var(--text-muted); font-size:.86rem; display:flex; gap:8px; }
+    .tier li::before{ content:"+"; color: var(--accent); font-family: var(--font-mono); flex-shrink:0; }
+    .tier .btn{ align-self:flex-start; }
+    .tier.tier-featured{ background: var(--accent-soft); }
+
+    .donate-note{
+      margin-top: 40px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: .84rem;
+    }
+    .donate-note .mf-head{
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-faint);
+      display:flex; justify-content:space-between;
+    }
+    .donate-note .mf-body{ padding: 18px 16px; display:flex; flex-direction:column; gap: 10px; }
+    .donate-note .row{ display:flex; gap: 10px; flex-wrap:wrap; }
+    .donate-note .key{ color: var(--text-muted); width: 130px; flex-shrink:0; }
+    .donate-note .val{ color: var(--accent); }
+    .donate-note .comment{ color: var(--text-faint); }
+
     /* ================= footer ================= */
     footer{ border-top: 1px solid var(--border); padding: 32px 0; }
     footer .wrap{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
@@ -283,6 +324,7 @@
         <li><a href="#join"><span class="br">02/</span> как попасть</a></li>
         <li><a href="#rules"><span class="br">03/</span> правила</a></li>
         <li><a href="#community"><span class="br">04/</span> сообщество</a></li>
+        <li><a href="#donate"><span class="br">05/</span> донат</a></li>
       </ul>
     </nav>
 
@@ -415,6 +457,66 @@
           <h3>Telegram</h3>
           <p>Здесь всё главное: заявки, новости и почти вся жизнь сервера.</p>
           <a href="https://t.me/mintsmp" class="btn btn-ghost">открыть →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="donate" class="join">
+    <div class="wrap">
+      <div class="section-head" style="margin-bottom:48px;">
+        <span class="eyebrow">без пэй-ту-вин</span>
+        <h2>Поддержать сервер</h2>
+        <p>Донат не даёт игрового преимущества — только косметику и спасибо от админов. Деньги идут на хостинг и домен.</p>
+      </div>
+
+      <div class="tier-grid">
+        <div class="tier">
+          <span class="tag">медь</span>
+          <h3>Причастный</h3>
+          <div class="price">от 100 ₽ / мес</div>
+          <ul>
+            <li>цветной ник в чате</li>
+            <li>роль в Discord</li>
+            <li>значок в /tab</li>
+          </ul>
+          <a href="#" class="btn btn-ghost">поддержать →</a>
+        </div>
+
+        <div class="tier tier-featured">
+          <span class="tag">железо</span>
+          <h3>Хранитель норы</h3>
+          <div class="price">от 300 ₽ / мес</div>
+          <ul>
+            <li>всё из «причастного»</li>
+            <li>питомец-компаньон на выбор</li>
+            <li>доступ к /fly на ивентах</li>
+            <li>отдельный канал для доната в Discord</li>
+          </ul>
+          <a href="#" class="btn btn-primary">поддержать →</a>
+        </div>
+
+        <div class="tier">
+          <span class="tag">незерит</span>
+          <h3>Легенда шахты</h3>
+          <div class="price">от 700 ₽ / мес</div>
+          <ul>
+            <li>всё из «хранителя норы»</li>
+            <li>уникальный тег в /tab</li>
+            <li>голос при обсуждении новых плагинов</li>
+            <li>приоритет в очереди заявок для друзей</li>
+          </ul>
+          <a href="#" class="btn btn-ghost">поддержать →</a>
+        </div>
+      </div>
+
+      <div class="donate-note">
+        <div class="mf-head"><span>payment.methods</span><span>обновлено: сейчас</span></div>
+        <div class="mf-body">
+          <div class="row"><span class="key">карта</span><span class="val">укажи здесь номер карты</span></div>
+          <div class="row"><span class="key">crypto</span><span class="val">укажи здесь адрес кошелька</span></div>
+          <div class="row"><span class="key">boosty / donationalerts</span><span class="val">укажи здесь ссылку</span></div>
+          <div class="row"><span class="comment"># после оплаты пришли скрин в Discord или Telegram — роль выдадим вручную</span></div>
         </div>
       </div>
     </div>
